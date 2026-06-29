@@ -1,0 +1,24 @@
+---
+- name: Provider Web Server IIS
+  hosts: all
+  gather_facts: yes
+  
+  tasks:
+    - name: Install role IIS (Web-Server)
+      win_feature:
+        name: Web-Server
+        state: present
+        include_management_tools: yes
+        include_sub_features: yes
+      register: iis_install
+
+    - name: Ensure that the service IIS is running
+      win_service:
+        name: W3SVC
+        state: started
+        start_mode: auto
+
+    - name: Create small index.html customized (Optional)
+      win_copy:
+        content: "<h1>Bem-vindo ao IIS configurado via Ansible!</h1>"
+        dest: C:\inetpub\wwwroot\index.html
